@@ -1,6 +1,6 @@
 const fs = require("fs");
 const http = require('http');
-
+// const url = require('url')
 /////////////////////////\
 // File reading
 
@@ -31,9 +31,28 @@ const http = require('http');
 
 /////////////////////////\
 // server
+const productsData = fs.readFileSync(`./dev-data/data.json`, "utf-8");
+// const productsData = JSON.parse(data);
+console.log("__dirname", __dirname);
 
 const server = http.createServer((req, res) => {
-    res.end("Hello from the backend server!!!")
+    console.log("asdasdas", req.url);
+    if(req.url === "/" || req.url === "/overview"){
+        res.end("This is home page :) !!!")
+    }else if(req.url === "/product") {
+        res.end("This is product page :) !!!")
+    }else if(req.url === "/api"){
+        res.writeHead(200, {
+            'Content-type' : 'application/json'
+        })
+        res.end(productsData);
+    }else{
+        res.writeHead(404, {
+            'Content-type' : 'text/html',
+            'custom-header': 'this is custom header'
+        })
+        res.end("The requested page is not found!!! :(")
+    }
 });
 
 server.listen(8000, "localhost", ()=>{
